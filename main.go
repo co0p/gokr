@@ -2,18 +2,41 @@ package main
 
 import (
 	"crypto/subtle"
-	"html/template"
 	"log"
 	"net/http"
 	"os"
+	"text/template"
+	"time"
 
 	"gopkg.in/mgo.v2"
 )
 
-const realm = "OKRs done in go"
-
 var tmp *template.Template
 var session *mgo.Session
+
+type CompanyStats struct {
+	CreatedAt time.Time
+
+	ProjectsBudgetPercentage uint
+	ProjectsRunningCount     uint
+	ProjectsMaintenanceCount uint
+	PrototypesCreatedCount   uint
+	IncidentCount            uint
+	MaintenanceCost          int
+
+	OfferCycletime                  uint
+	OffersCreatedCount              uint
+	OffersDeniedCount               uint
+	InquieriesNewCustomerCount      uint
+	InquieriesExistingCustomerCount uint
+	InquieriesDeniedCount           uint
+
+	BudgetPlanned        int
+	BudgetCurrent        int
+	OccupancyPercentage  uint
+	MatchingGartnerCount uint
+	MarketingCount       uint
+}
 
 func init() {
 	tmp = template.Must(template.ParseFiles("index.html"))
@@ -25,7 +48,7 @@ func main() {
 	port := envWithDefault("PORT", "8080")
 	user := envWithDefault("GOKR_USERNAME", "user")
 	pwd := envWithDefault("GOKR_PASSWORD", "user2")
-	mongoURI := envWithDefault("GOKR_MONGO_PATH", "mongodb://gokr:golangokrs@ds113738.mlab.com:13738/gokr")
+	mongoURI := envWithDefault("GOKR_MONGO_PATH", "")
 
 	log.Printf("loaded configuration from environment\n")
 
@@ -41,7 +64,6 @@ func main() {
 	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		log.Fatalln("failed to start http server: " + err.Error())
 	}
-
 }
 
 func handleHTTP(w http.ResponseWriter, r *http.Request) {
@@ -52,13 +74,22 @@ func handleHTTP(w http.ResponseWriter, r *http.Request) {
 
 	// create data
 
-	vm := struct {
-		Title    string
-		Headline string
-	}{
-		"gokr",
-		"OKRs done in go",
+	current := CompanyStats{
+		BudgetCurrent: 1,
 	}
+
+	previous := CompanyStats{
+		BudgetCurrent: 1,
+	}
+
+	vm := struct {
+		Current, Previous CompanyStats
+	}{
+		current,
+		previous,
+	}
+
+	log.Printf("serving data: %v \n", vm)
 
 	// serve template
 	tmp.Execute(w, vm)
@@ -73,12 +104,14 @@ func BasicAuth(handler http.HandlerFunc, username, password string) http.Handler
 		user, pass, ok := r.BasicAuth()
 
 		if !ok || subtle.ConstantTimeCompare([]byte(user), []byte(username)) != 1 || subtle.ConstantTimeCompare([]byte(pass), []byte(password)) != 1 {
-			w.Header().Set("WWW-Authenticate", `Basic realm="`+realm+`"`)
+			w.Header().Set("WWW-Authenticate", `Basic realm="gokrs"`)
 			w.WriteHeader(401)
 			w.Write([]byte("Unauthorised.\n"))
 			log.Printf("rejected access for user=%s pwd=%s\n", user, pass)
 			return
 		}
+
+		log.Printf("granting access for user=%s pwd=%s\n", user, pass)
 
 		handler(w, r)
 	}

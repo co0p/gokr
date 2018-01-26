@@ -1,11 +1,136 @@
-<html lang="en">
+<html lang="de">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{{.Title}}</title>
+    <title>Company Measures</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/tachyons@4.9.1/css/tachyons.min.css" />
+
 </head>
-<body>
-    <h1>{{.Headline}}</h1>
+
+<body class="w-100 sans-serif bg-white black-80 helvetica">
+
+    <main>
+        <div class="component">
+
+            <article class="pa3 pa5-ns">
+                <h1 class="f1 f1-m f-headline">Company Measures
+                    <small>all the things</small>
+                </h1>
+
+                <h2 class="pt2">Project related</h2>
+                <div class="flex justify-between">
+
+                    <dl class="dib mr5">
+                        <dd class="f6 f5-ns b ml0"># incident </dd>
+                        <dd class="f3 f2-ns b ml0">{{.Current.IncidentCount}}
+                            <small>{{.Previous.IncidentCount}}</small></dd>
+                    </dl>
+                    <dl class="dib mr5">
+                        <dd class="f6 f5-ns b ml0"># in maintenance</dd>
+                        <dd class="f3 f2-ns b ml0">{{.Current.ProjectsMaintenanceCount}}
+                            <small>{{.Previous.ProjectsMaintenanceCount}}</small></dd>
+                    </dl>
+                    <dl class="dib mr5">
+                        <dd class="f6 f5-ns b ml0">Spend on maintenance</dd>
+                        <dd class="f3 f2-ns b ml0">{{.Current.MaintenanceCost}}
+                            <small>{{.Previous.MaintenanceCost}}</small>€</dd>
+                    </dl>
+                    <dl class="dib mr5">
+                        <dd class="f6 f5-ns b ml0"># in development</dd>
+                        <dd class="f3 f2-ns b ml0">{{.Current.ProjectsMaintenanceCount}}
+                            <small>{{.Previous.ProjectsMaintenanceCount}}</small></dd>
+                    </dl>
+                    <dl class="dib mr5">
+                        <dd class="f6 f5-ns b ml0">dev budget used</dd>
+                        <dd class="f3 f2-ns b ml0">{{.Current.ProjectsBudgetPercentage}}%
+                            <small>{{.Previous.ProjectsBudgetPercentage}}%</small></dd>
+                    </dl>
+                    <dl class="dib mr5">
+                        <dd class="f6 f5-ns b ml0"># prototypes</dd>
+                        <dd class="f3 f2-ns b ml0">{{.Current.PrototypesCreatedCount}}
+                            <small>{{.Previous.PrototypesCreatedCount}}</small></dd>
+                    </dl>
+                </div>
+
+                <h2 class="pt2">Presales</h2>
+                <div class="flex justify-between">
+
+                    <dl class="dib mr5">
+                        <dd class="f6 f5-ns b ml0"># offers created</dd>
+                        <dd class="f3 f2-ns b ml0">{{.Current.OffersCreatedCount}}
+                            <small>{{.Previous.OffersCreatedCount}}</small></dd>
+                    </dl>
+                    <dl class="dib mr5">
+                        <dd class="f6 f5-ns b ml0"># offers denied</dd>
+                        <dd class="f3 f2-ns b ml0">{{.Current.OffersDeniedCount}}
+                            <small>{{.Previous.OffersDeniedCount}}</small></dd>
+                    </dl>
+                    <dl class="dib mr5">
+                        <dd class="f6 f5-ns b ml0">offers cycletime</dd>
+                        <dd class="f3 f2-ns b ml0">{{.Current.OfferCycletime}}d
+                            <small>{{.Previous.OfferCycletime}}d</small></dd>
+                    </dl>
+                    <dl class="dib mr5">
+                        <dd class="f6 f5-ns b ml0"># inquiries (new customer)</dd>
+                        <dd class="f3 f2-ns b ml0">{{.Current.InquieriesNewCustomerCount}}
+                            <small>{{.Previous.InquieriesNewCustomerCount}}</small></dd>
+                    </dl>
+                    <dl class="dib mr5">
+                        <dd class="f6 f5-ns b ml0"># inquiries (ex. customer)</dd>
+                        <dd class="f3 f2-ns b ml0">{{.Current.InquieriesExistingCustomerCount}}
+                            <small>{{.Previous.InquieriesExistingCustomerCount}}</small></dd>
+                    </dl>
+                    <dl class="dib mr5">
+                        <dd class="f6 f5-ns b ml0"># inquiries denied</dd>
+                        <dd class="f3 f2-ns b ml0">{{.Current.InquieriesDeniedCount}}
+                            <small>{{.Previous.InquieriesDeniedCount}}</small></dd>
+                    </dl>
+                </div>
+
+                <h2 class="pt2">Budget & misc.</h2>
+                <div class="flex justify-between">
+
+                    <dl class="dib mr5">
+                        <dd class="f6 f5-ns b ml0">budget planned</dd>
+                        <dd class="f3 f2-ns b ml0">{{.Current.BudgetPlanned}}
+                            <small>{{.Previous.BudgetPlanned}}</small>€</dd>
+                    </dl>
+                    <dl class="dib mr5">
+                        <dd class="f6 f5-ns b ml0">budget current</dd>
+                        <dd class="f3 f2-ns b ml0">{{.Current.BudgetCurrent}}€
+                            <small>{{.Previous.BudgetCurrent}}€</small></dd>
+                    </dl>
+                    <dl class="dib mr5">
+                        <dd class="f6 f5-ns b ml0">% occupancy</dd>
+                        <dd class="f3 f2-ns b ml0">{{.Current.OccupancyPercentage}}%
+                            <small>{{.Previous.OccupancyPercentage}}%</small></dd>
+                    </dl>
+                    <dl class="dib mr5">
+                        <dd class="f6 f5-ns b ml0"># matching hype</dd>
+                        <dd class="f3 f2-ns b ml0">{{.Current.MatchingGartnerCount}}
+                            <small>{{.Previous.MatchingGartnerCount}}</small></dd>
+                    </dl>
+                    <dl class="dib mr5">
+                        <dd class="f6 f5-ns b ml0"># marketing actions </dd>
+                        <dd class="f3 f2-ns b ml0">{{.Current.MarketingCount}}
+                            <small>{{.Previous.MarketingCount}}</small></dd>
+                    </dl>
+                </div>
+            </article>
+
+        </div>
+
+    </main>
+
+
+    <footer class="pv4 ph3 ph5-m ph6-l mid-gray">
+        <small class="f6 db tc">
+            <b class="ttu">Your company</b>., All Rights Reserved
+        </small>
+    </footer>
 </body>
+
 </html>
