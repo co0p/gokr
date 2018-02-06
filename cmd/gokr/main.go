@@ -6,42 +6,43 @@ import (
 	"os"
 	"text/template"
 
-	"github.com/co0p/gokr/web"
+	"github.com/co0p/gokr"
 
-	"gopkg.in/mgo.v2"
+	gokrhttp "github.com/co0p/gokr/http"
+	"github.com/co0p/gokr/mongo"
 )
 
 var tmp *template.Template
-var session *mgo.Session
 
 func init() {
-	tmp = template.Must(template.ParseFiles("index.html"))
+	tmp = template.Must(template.ParseFiles("templates/index.html"))
 }
 
 func main() {
 
 	// read environment vars
 	port := envWithDefault("PORT", "8080")
-	user := envWithDefault("GOKR_USERNAME", "user")
-	pwd := envWithDefault("GOKR_PASSWORD", "user2")
+	//user := envWithDefault("GOKR_USERNAME", "user")
+	//pwd := envWithDefault("GOKR_PASSWORD", "user2")
 	mongoURI := envWithDefault("GOKR_MONGO_PATH", "")
 	log.Printf("loaded configuration from environment\n")
 
 	// connect to mongo
-	session, err := mgo.Dial(mongoURI)
+	store, err := mongo.Connect(mongoURI)
 	if err != nil {
 		log.Fatalln("failed to connect to mongo: " + err.Error())
 	}
 	log.Printf("connected to mongodb\n")
 
-	// register handlers
-	h := web.NewHandlers(tmp, session)
+	// assemble dependencies
+	aggregationService := gokr.AggregationService{AggregationStore: &store}
+	aggregationHandler := gokrhttp.AggregationHandler{AggregationService: &aggregationService}
 
-	http.Handle("/", web.WithBasicAuth(h.RootHandler, user, pwd))
-	http.Handle("/api/events", web.WithBasicAuth(h.EventsHandler, user, pwd))
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", aggregationHandler.Handle())
 
 	log.Printf("starting webserver at: %s\n", port)
-	if err := http.ListenAndServe(":"+port, nil); err != nil {
+	if err := http.ListenAndServe(":"+port, mux); err != nil {
 		log.Fatalln("failed to start http server: " + err.Error())
 	}
 }
