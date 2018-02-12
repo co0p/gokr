@@ -1,1 +1,3 @@
 .credentials
+vendor
+_vendor*

@@ -1,17 +1,26 @@
 package http
 
 import (
+	"log"
 	"net/http"
 
-	"github.com/co0p/gokr"
+	"github.com/co0p/gokr/usecase"
 )
 
-type AggregationHandler struct {
-	AggregationService *gokr.AggregationService
+type AddAggregation struct {
+	Usecase *usecase.AddAggregation
 }
 
-func (h *AggregationHandler) Handle() func(http.ResponseWriter, *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("hi there"))
-	}
+func (h AddAggregation) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	log.Println("hi there")
+	w.Write([]byte("hi there"))
+}
+
+type GetAggregation struct {
+	Usecase *usecase.GetAggregation
+}
+
+func (h GetAggregation) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	log.Println("hi there")
+	w.Write([]byte("hi there"))
 }

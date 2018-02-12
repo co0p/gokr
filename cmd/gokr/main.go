@@ -4,26 +4,19 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"text/template"
+	"time"
 
-	"github.com/co0p/gokr"
+	"github.com/co0p/gokr/usecase"
+	"github.com/gorilla/mux"
 
-	gokrhttp "github.com/co0p/gokr/http"
+	httpHandler "github.com/co0p/gokr/http"
 	"github.com/co0p/gokr/mongo"
 )
-
-var tmp *template.Template
-
-func init() {
-	tmp = template.Must(template.ParseFiles("templates/index.html"))
-}
 
 func main() {
 
 	// read environment vars
 	port := envWithDefault("PORT", "8080")
-	//user := envWithDefault("GOKR_USERNAME", "user")
-	//pwd := envWithDefault("GOKR_PASSWORD", "user2")
 	mongoURI := envWithDefault("GOKR_MONGO_PATH", "")
 	log.Printf("loaded configuration from environment\n")
 
@@ -35,14 +28,27 @@ func main() {
 	log.Printf("connected to mongodb\n")
 
 	// assemble dependencies
-	aggregationService := gokr.AggregationService{AggregationStore: &store}
-	aggregationHandler := gokrhttp.AggregationHandler{AggregationService: &aggregationService}
+	getUsecase := usecase.GetAggregation{Store: &store}
+	addUsecase := usecase.AddAggregation{Store: &store}
 
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", aggregationHandler.Handle())
+	getHandler := httpHandler.GetAggregation{Usecase: &getUsecase}
+	addHandler := httpHandler.AddAggregation{Usecase: &addUsecase}
+
+	r := mux.NewRouter()
+	r.HandleFunc("/api/aggregations", getHandler.ServeHTTP).Methods("GET")
+	r.HandleFunc("/api/aggregations", addHandler.ServeHTTP).Methods("POST")
+	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
+
+	srv := &http.Server{
+		Handler: r,
+		Addr:    ":" + port,
+		// Good practice: enforce timeouts for servers you create!
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
+	}
 
 	log.Printf("starting webserver at: %s\n", port)
-	if err := http.ListenAndServe(":"+port, mux); err != nil {
+	if err := srv.ListenAndServe(); err != nil {
 		log.Fatalln("failed to start http server: " + err.Error())
 	}
 }

@@ -2,16 +2,11 @@ package gokr
 
 import "time"
 
-type AggregationType string
-
-const (
-	Sum          AggregationType = "sum"
-	TotalSum                     = "totalSum"
-	Average                      = "average"
-	TotalAverage                 = "totalAverage"
-)
+type AggregationId int
 
 type Aggregation struct {
+	ID AggregationId
+
 	IncidentCount,
 	ProjectsRunningCount,
 	ProjectsMaintenanceCount,

@@ -24,7 +24,7 @@ func NewHandlers(template *template.Template, session *mgo.Session) Handlers {
 }
 
 func (h Handlers) RootHandler(w http.ResponseWriter, r *http.Request) {
-	s := h.session.Copy()
+	/*s := h.session.Copy()
 	defer s.Close()
 
 	// aggregate result
@@ -54,6 +54,7 @@ func (h Handlers) RootHandler(w http.ResponseWriter, r *http.Request) {
 
 	// serve template
 	h.template.Execute(w, vm)
+	*/
 }
 
 func (h Handlers) EventsHandler(w http.ResponseWriter, r *http.Request) {
