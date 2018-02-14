@@ -1,6 +1,7 @@
 package http
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -21,6 +22,11 @@ type GetAggregation struct {
 }
 
 func (h GetAggregation) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	log.Println("hi there")
-	w.Write([]byte("hi there"))
+	docs, err := h.Usecase.All()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	msg := fmt.Sprintf("found %d docs", len(docs))
+	w.Write([]byte(msg))
+
 }

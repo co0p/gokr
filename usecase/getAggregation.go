@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"log"
+
 	"github.com/co0p/gokr"
 )
 
@@ -9,9 +11,11 @@ type GetAggregation struct {
 }
 
 func (u *GetAggregation) All() ([]gokr.Aggregation, error) {
-	return nil, nil
+	log.Printf("get  all aggregations")
+	return u.Store.All()
 }
 
 func (u *GetAggregation) Latest() (gokr.Aggregation, error) {
-	return gokr.Aggregation{}, nil
+	log.Printf("get latest aggregation")
+	return u.Store.Latest()
 }

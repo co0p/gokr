@@ -22,6 +22,7 @@ func main() {
 
 	// connect to mongo
 	store, err := mongo.Connect(mongoURI)
+	defer store.Close()
 	if err != nil {
 		log.Fatalln("failed to connect to mongo: " + err.Error())
 	}

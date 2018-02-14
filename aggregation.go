@@ -1,8 +1,11 @@
 package gokr
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
-type AggregationId int
+type AggregationId string
 
 type Aggregation struct {
 	ID AggregationId
@@ -25,5 +28,9 @@ type Aggregation struct {
 	GartnerHypeCount,
 	MarketingActivityCount int
 
-	FromDate, ToDate time.Time
+	CreatedAt time.Time
+}
+
+func (a Aggregation) Stringer() string {
+	return fmt.Sprintf("id: %s, created at %s", a.ID, a.CreatedAt)
 }
